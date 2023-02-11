@@ -13,7 +13,7 @@ public:
 	struct Node
 	{
 		T value;
-		NodePtr *next = nullptr;
+		NodePtr next = nullptr;
 	};
 
 	

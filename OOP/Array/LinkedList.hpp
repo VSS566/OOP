@@ -16,6 +16,8 @@ public:
 		NodePtr *next = nullptr;
 	};
 
+	
+
 	T& operator[](size_t index) {
 		NodePtr selected {first_node_};
 
@@ -31,7 +33,7 @@ public:
 		return first_node_.value;
 	}
 
-	const T& value() const {
+	const T& operator[](size_t index) const {
 		NodePtr selected{ first_node_ };
 
 		for (size_t i = 0; i < index; i++)
@@ -45,8 +47,14 @@ public:
 
 		return first_node_.value;
 	}
+
+	[[nodiscard]] const size_t& size() const
+	{
+		return size_;
+	}
 private:
 	Node first_node_;
+	size_t size_;
 };
 
 template <typename T>

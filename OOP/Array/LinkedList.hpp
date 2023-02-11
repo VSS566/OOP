@@ -3,23 +3,69 @@
 
 #include <memory>
 
+using std::make_unique;
+using std::unique_ptr;
+
 template <typename T>
 class LinkedList
 {
 public:
 	struct Node;
-	using NodePtr = std::unique_ptr<Node>;
+	using NodePtr = Node*;
 
 	struct Node
 	{
 		T value;
 		NodePtr next = nullptr;
+
+		Node(T value)
+		{
+			this->value = std::move(value);
+			next = nullptr;
+		}
+		Node(T value, NodePtr next)
+		{
+			this->value = std::move(value);
+			next = next;
+		}
 	};
 
-	
+	LinkedList(std::initializer_list<T> list)
+		: first_node_(0),
+		last_node_(&first_node_),
+		size_(list.size())
+	{
+		const T* begin = list.begin();
+
+		last_node_->value = std::move(*begin);
+
+		++begin;
+
+		for (; begin != list.end(); ++begin)
+		{
+			add(*begin);
+		}
+	}
+
+	~LinkedList()
+	{
+		NodePtr current = first_node_.next;
+		while (current != nullptr)
+		{
+			NodePtr next = current->next;
+			delete current;
+			current = next;
+		}
+	}
+
+	void add(T value)
+	{
+		last_node_->next = new Node(std::move(value));
+		last_node_ = last_node_->next;
+	}
 
 	T& operator[](size_t index) {
-		NodePtr selected {first_node_};
+		NodePtr selected {&first_node_};
 
 		for (size_t i = 0; i < index; i++)
 		{
@@ -30,11 +76,11 @@ public:
 			selected = selected->next;
 		}
 
-		return first_node_.value;
+		return selected->value;
 	}
 
 	const T& operator[](size_t index) const {
-		NodePtr selected{ first_node_ };
+		NodePtr selected{ &first_node_ };
 
 		for (size_t i = 0; i < index; i++)
 		{
@@ -45,7 +91,7 @@ public:
 			selected = selected->next;
 		}
 
-		return first_node_.value;
+		return selected->value;
 	}
 
 	[[nodiscard]] const size_t& size() const
@@ -54,6 +100,7 @@ public:
 	}
 private:
 	Node first_node_;
+	NodePtr last_node_{&first_node_};
 	size_t size_;
 };
 

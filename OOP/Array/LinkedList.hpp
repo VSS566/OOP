@@ -18,7 +18,7 @@ public:
 		T value;
 		NodePtr next = nullptr;
 
-		Node(T value)
+		explicit Node(T value)
 		{
 			this->value = std::move(value);
 			next = nullptr;

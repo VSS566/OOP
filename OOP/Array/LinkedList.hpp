@@ -26,7 +26,7 @@ public:
 		Node(T value, NodePtr next)
 		{
 			this->value = std::move(value);
-			next = next;
+			this->next = next;
 		}
 	};
 
@@ -62,6 +62,7 @@ public:
 	{
 		last_node_->next = new Node(std::move(value));
 		last_node_ = last_node_->next;
+		size_++;
 	}
 
 	T& operator[](size_t index) {
